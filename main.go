@@ -25,6 +25,7 @@ func main() {
 	}
 
 	targets, err := getTargetsFromMakeDb(makeOut)
+	fmt.Print(targets)
 	if err != nil {
 		fmt.Println("Error executing command:", err)
 	}
@@ -47,7 +48,6 @@ func main() {
 		fmt.Printf("Error executing target %q command: %s", result, err)
 		return
 	}
-
 }
 
 func getTargetsFromMakeDb(makeDb []byte) ([]string, error) {
@@ -64,11 +64,11 @@ func getTargetsFromMakeDb(makeDb []byte) ([]string, error) {
 	re = regexp.MustCompile(`(^|\n)# Files(\n|$)[\s\S]*?(^|\n)# Finished Make data base`)
 	match := re.FindString(textNoNewLines)
 	if match == "" {
-		return targets, errors.New("no match found")
+		return targets, errors.New("error during the parsing of make database")
 	}
 
 	// Ignores non-targets and special targets
-	re = regexp.MustCompile(`(?m)^[#|\.].*\n`)
+	re = regexp.MustCompile(`(?m)^[#|\.|:].*\n`)
 	resultNoNonTargets := re.ReplaceAllString(match, "")
 
 	re = regexp.MustCompile(`(?m)^\t.*\n`)
