@@ -1,6 +1,6 @@
 # maki
 
-Maki (Make but Interactive) is a small utility to help you select the targets of you Makefile.
+Maki (*Make but Interactive*) is a small utility to help you select the targets of you Makefile.
 
 ## Installation
 
