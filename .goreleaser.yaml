@@ -1,0 +1,39 @@
+before:
+  hooks:
+    - go mod tidy
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+
+archives:
+  - format: tar.gz
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+
+brews:
+  - tap:
+      owner: lorenzophys
+      name: homebrew-maki
+      branch: main
+    commit_author:
+      name: Lorenzo Maffioli
+      email: lorenzo.maffioli@gmail.com
+    homepage: "https://github.com/lorenzophys/maki"
+    description: "Maki, Make but interactive."
+    license: "MIT"
+    install: |
+      bin.install "maki"

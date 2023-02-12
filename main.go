@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"regexp"
+	"sort"
 	"strings"
 
 	"github.com/manifoldco/promptui"
@@ -93,6 +94,8 @@ func getTargetsFromMakeDb(makeDb []byte) ([]string, error) {
 		targets = append(targets, v)
 
 	}
+
+	sort.Strings(targets)
 
 	return targets, nil
 }
