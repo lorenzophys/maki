@@ -18,6 +18,8 @@ func TestGetTargetsFromMakeDb(t *testing.T) {
 
 # Variables
 # LOTS OF STUFF HERE
+# makefile (from 'Makefile', line 1)
+MAKEFILE_LIST :=  YOUcanNaMeYourMakeFILEweirdStuff
 # default
 MAKEFILES := xxx
 # automatic
@@ -105,7 +107,7 @@ coverage:
 	
 
 # Not a target:
-Makefile:
+YOUcanNaMeYourMakeFILEweirdStuff:
 #  Implicit rule search has been done.
 #  Last modified 2023-02-12 10:49:18
 #  File has been updated.

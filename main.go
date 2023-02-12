@@ -57,8 +57,12 @@ func getTargetsFromMakeDb(makeDb []byte) ([]string, error) {
 	// Convert the []byte to a string
 	text := string(makeDb)
 
+	// Retrieve the makefile_list variable
+	re := regexp.MustCompile(`MAKEFILE_LIST\s*:=\s*(.+)`)
+	makefileList := re.FindStringSubmatch(text)[1]
+
 	// Replace all blank lines with an empty string
-	re := regexp.MustCompile(`(?m)^\s*\n`)
+	re = regexp.MustCompile(`(?m)^\s*\n`)
 	textNoNewLines := re.ReplaceAllString(text, "")
 
 	// Limit the parsing range to the block that contains the targets
@@ -77,7 +81,8 @@ func getTargetsFromMakeDb(makeDb []byte) ([]string, error) {
 	resultNoCommands := re.ReplaceAllString(resultNoNonTargets, "")
 
 	// Remove the 'Makefile' entry
-	re = regexp.MustCompile(`(?m)^Makefile.*\n`)
+	regex := fmt.Sprintf(`(?m)^(%s).*\n`, makefileList)
+	re = regexp.MustCompile(regex)
 	resultNoMakefile := re.ReplaceAllString(resultNoCommands, "")
 
 	lines := strings.Split(resultNoMakefile, "\n")
