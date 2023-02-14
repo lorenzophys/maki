@@ -2,6 +2,17 @@
 
 Maki (*Make but Interactive*) is a small utility to help you select the targets of you Makefile.
 
+```console
+user@laptop:~$ maki -h
+Usage: maki [OPTIONS]
+
+        Run make targets in interactive mode.
+
+Options:
+-f            The makefile name.
+-h, --help    Show this message and exit.
+```
+
 ## Installation
 
 ### Homebrew

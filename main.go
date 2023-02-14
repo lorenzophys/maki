@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"flag"
 	"fmt"
 	"os"
 	"os/exec"
@@ -12,9 +13,30 @@ import (
 	"github.com/manifoldco/promptui"
 )
 
-func main() {
+var usage = `Usage: maki [OPTIONS]
 
-	makeOut, err := exec.Command("make", "-pRrq", ":").Output()
+	Run make targets in interactive mode.
+
+Options:
+-f            The makefile name.
+-h, --help    Show this message and exit.
+`
+
+func main() {
+	var makefile string
+
+	flag.StringVar(&makefile, "f", "Makefile", "The makefile name.")
+	flag.Usage = func() {
+		fmt.Print(usage)
+	}
+	flag.Parse()
+
+	if _, err := os.Stat(makefile); err != nil {
+		fmt.Printf("File named %q not found.", makefile)
+		return
+	}
+
+	makeOut, err := exec.Command("make", "-f", makefile, "-pRrq", ":").Output()
 	if err != nil {
 		if _, ok := err.(*exec.ExitError); ok {
 			// Ignore error, make returns 1 when using -q and some targets are not up to date
@@ -32,7 +54,7 @@ func main() {
 	}
 
 	prompt := promptui.Select{
-		Label: "Select make target",
+		Label: "Select make target:",
 		Items: targets,
 	}
 
@@ -42,7 +64,7 @@ func main() {
 		return
 	}
 
-	cmd := exec.Command("make", result)
+	cmd := exec.Command("make", "-f", makefile, result)
 	cmd.Stdout = os.Stdout
 	err = cmd.Run()
 	if err != nil {
@@ -72,7 +94,7 @@ func getTargetsFromMakeDb(makeDb []byte) ([]string, error) {
 		return targets, errors.New("error during the parsing of make database")
 	}
 
-	// Ignores non-targets and special targets
+	// Ignore non-targets and special targets
 	re = regexp.MustCompile(`(?m)^[#|\.|:].*\n`)
 	resultNoNonTargets := re.ReplaceAllString(match, "")
 
@@ -91,13 +113,12 @@ func getTargetsFromMakeDb(makeDb []byte) ([]string, error) {
 		lines[i] = strings.TrimSuffix(line, ":")
 	}
 
-	// Removes the residual lines that are not targets
+	// Remove the residual lines that are not targets
 	for _, v := range lines {
 		if strings.HasPrefix(v, "#") || v == "" {
 			continue
 		}
 		targets = append(targets, v)
-
 	}
 
 	sort.Strings(targets)
