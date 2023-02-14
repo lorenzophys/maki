@@ -13,10 +13,22 @@ import (
 	"github.com/manifoldco/promptui"
 )
 
+var usage = `Usage: maki [OPTIONS]
+
+	Run make targets in interactive mode.
+
+Options:
+-f            The makefile name.
+-h, --help    Show this message and exit.
+`
+
 func main() {
 	var makefile string
 
-	flag.StringVar(&makefile, "f", "Makefile", "The makefile path")
+	flag.StringVar(&makefile, "f", "Makefile", "The makefile name.")
+	flag.Usage = func() {
+		fmt.Print(usage)
+	}
 	flag.Parse()
 
 	if _, err := os.Stat(makefile); err != nil {
