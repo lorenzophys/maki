@@ -48,7 +48,6 @@ func main() {
 	}
 
 	targets, err := getTargetsFromMakeDb(makeOut)
-	fmt.Print(targets)
 	if err != nil {
 		fmt.Println("Error executing command:", err)
 	}
