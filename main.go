@@ -59,6 +59,9 @@ func main() {
 
 	_, result, err := prompt.Run()
 	if err != nil {
+		if err.Error() == "^C" {
+			return
+		}
 		fmt.Printf("Prompt failed %v\n", err)
 		return
 	}
