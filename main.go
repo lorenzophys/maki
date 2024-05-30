@@ -66,7 +66,9 @@ func main() {
 		return
 	}
 
-	cmd := exec.Command("make", "-f", makefile, result)
+	root := strings.Split(result, ":")[0]
+
+	cmd := exec.Command("make", "-f", makefile, root)
 	cmd.Stdout = os.Stdout
 	err = cmd.Run()
 	if err != nil {
